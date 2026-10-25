@@ -1,0 +1,30 @@
+services:
+  go2:
+    build:
+      context: .
+      args:
+        USER_UID: ${HOST_UID:-1000}
+        USER_GID: ${HOST_GID:-1000}
+        RENDER_GID: ${RENDER_GID:-110}
+    image: go2-autonomy:foxy
+    container_name: go2_foxy
+    # Host network: DDS to Go2 over Ethernet and ROS-TCP-Endpoint <-> Unity on localhost
+    network_mode: host
+    ipc: host
+    # /dev passthrough for the joystick (/dev/input/js0) and GPU (/dev/dri)
+    privileged: true
+    group_add:
+      - "${VIDEO_GID:-44}"
+      - "${RENDER_GID:-110}"
+    environment:
+      - DISPLAY=${DISPLAY:-:0}
+      - QT_X11_NO_MITSHM=1
+      - GO2_IFACE=${GO2_IFACE:-eno1}
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - /dev:/dev
+      - ..:/home/go2/autonomy_stack_go2
+      # calibrate_imu / transform_sensors read and write ~/Desktop/imu_calib_data.yaml
+      - ../calib:/home/go2/Desktop
+    stdin_open: true
+    tty: true

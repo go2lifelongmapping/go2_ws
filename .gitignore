@@ -25,3 +25,7 @@ src/base_autonomy/vehicle_simulator/mesh/unity/*
 src/base_autonomy/vehicle_simulator/log/*
 
 !readme.txt
+
+# Robot-specific IMU calibration and recorded bags (see docker/README.md)
+calib/
+bags/
